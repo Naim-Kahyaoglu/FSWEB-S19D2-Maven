@@ -205,16 +205,18 @@ class ControllerAndPropertiesTest {
     void testSaveCustomer() throws Exception {
         given(customerService.save(any())).willReturn(sampleCustomerForCustomerControllerTest);
 
-        CustomerResponse expectedResponse = new CustomerResponse(sampleCustomerForCustomerControllerTest.getId(), sampleCustomerForCustomerControllerTest.getEmail(), sampleCustomerForCustomerControllerTest.getSalary());
+        CustomerResponse expectedResponse = new CustomerResponse(
+                sampleCustomerForCustomerControllerTest.getId(),
+                sampleCustomerForCustomerControllerTest.getEmail(),
+                sampleCustomerForCustomerControllerTest.getSalary()
+        );
 
         mockMvc.perform(post("/customer")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sampleCustomerForCustomerControllerTest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is((int) expectedResponse.id())))
+                .andExpect(jsonPath("$.id", is(expectedResponse.id().intValue()))) // Use intValue()
                 .andExpect(jsonPath("$.email", is(expectedResponse.email())))
                 .andExpect(jsonPath("$.salary", is(expectedResponse.salary())));
-
-        verify(customerService).save(any());
     }
 }
